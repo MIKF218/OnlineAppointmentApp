@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{admin.dashboard.title}">Admin Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .styled-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 0.9em;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .styled-table thead tr {
+      background-color: #009879;
+      color: #ffffff;
+      text-align: left;
+    }
+    .styled-table th,
+    .styled-table td {
+      padding: 12px 15px;
+    }
+    .styled-table tbody tr {
+      border-bottom: 1px solid #dddddd;
+    }
+    .styled-table tbody tr:nth-of-type(even) {
+      background-color: #f3f3f3;
+    }
+    .styled-table tbody tr:last-of-type {
+      border-bottom: 2px solid #009879;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .logout-container {
+      text-align: right;
+    }
+    .button {
+      background-color: #e74c3c;
+      color: white;
+      padding: 8px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #c0392b;
+    }
+    .language-switcher a {
+      margin-left: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #009879;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="top-bar">
+    <div class="language-switcher">
+      <span th:text="#{admin.dashboard.language}">language</span>
+      <a th:href="@{/admin/dashboard(language='en')}">EN</a> |
+      <a th:href="@{/admin/dashboard(language='tr')}">TR</a>
+    </div>
+    <div class="logout-container">
+      <form th:action="@{/logout}" method="post">
+        <button type="submit" class="button" th:text="#{admin.dashboard.logout}">Logout</button>
+      </form>
+    </div>
+  </div>
+
+  <h2 th:text="#{admin.dashboard.heading}">Admin Dashboard</h2>
+  <table class="styled-table">
+    <thead>
+    <tr>
+      <th th:text="#{admin.dashboard.table.header.user}">User</th>
+      <th th:text="#{admin.dashboard.table.header.email}">Email</th>
+      <th th:text="#{admin.dashboard.table.header.date}">Date</th>
+      <th th:text="#{admin.dashboard.table.header.time}">Time</th>
+      <th th:text="#{admin.dashboard.table.header.action}">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="appointment : ${appointments}">
+      <td th:text="${appointment.user.name}">User Name</td>
+      <td th:text="${appointment.user.email}">Email</td>
+      <td th:text="${#temporals.format(appointment.date, 'dd.MM.yyyy')}">Date</td>
+      <td th:text="${appointment.time}">Time</td>
+      <td>
+        <form th:action="@{/admin/appointments/cancel/{id}(id=${appointment.id})}" method="post">
+          <button type="submit" class="button" th:text="#{admin.dashboard.cancel}">Cancel</button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${appointments.empty}">
+      <td colspan="5" style="text-align: center;" th:text="#{admin.dashboard.no_appointments}">No appointments found</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

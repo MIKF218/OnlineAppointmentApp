@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{user.home.title}">User Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    .button-container {
+      margin: 20px 0;
+      text-align: center;
+    }
+    .logout-form {
+      margin-top: 40px;
+      text-align: center;
+    }
+    .logout-button {
+      background: linear-gradient(to right, #e74c3c, #c0392b);
+    }
+    /* Added top-bar and language-switcher styles */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .language-switcher {
+      text-align: left;
+    }
+    .language-switcher a {
+      margin-left: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #3498db;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Added language switcher top bar -->
+  <div class="top-bar">
+    <div class="language-switcher">
+      <span th:text="#{admin.dashboard.language}">language</span>
+      <a th:href="@{/home(language='en')}">EN</a> |
+      <a th:href="@{/home(language='tr')}">TR</a>
+    </div>
+  </div>
+
+  <!-- Modified to handle null user object -->
+  <h2 th:text="#{user.home.welcome}">Welcome to Your Dashboard!</h2>
+  <div class="form">
+    <div class="button-container">
+      <a th:href="@{/appointments/book}" class="button" th:text="#{user.home.book}">Book an Appointment</a>
+    </div>
+    <div class="button-container">
+      <a th:href="@{/appointments/my}" class="button" th:text="#{user.home.view}">My Appointments</a>
+    </div>
+    
+    <!-- Logout functionality -->
+    <div class="logout-form">
+      <form th:action="@{/logout}" method="post">
+        <button type="submit" class="button logout-button" th:text="#{admin.dashboard.logout}">Logout</button>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

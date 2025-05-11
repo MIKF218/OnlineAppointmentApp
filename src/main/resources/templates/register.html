@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{register.title}">Sign Up</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Added top-bar and language-switcher styles */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .language-switcher {
+      text-align: left;
+    }
+    .language-switcher a {
+      margin-left: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #007bff;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Added language switcher top bar -->
+  <div class="top-bar">
+    <div class="language-switcher">
+      <span th:text="#{admin.dashboard.language}">language</span>
+      <a th:href="@{/register(language='en')}">EN</a> |
+      <a th:href="@{/register(language='tr')}">TR</a>
+    </div>
+  </div>
+
+  <h2 th:text="#{register.title}">Create Your Account</h2>
+  
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+  
+  <form th:action="@{/req/register}" th:object="${user}" method="post" class="form">
+    <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+      <ul>
+        <li th:each="error : ${#fields.errors('*')}" th:text="${error}"></li>
+      </ul>
+    </div>
+    <div class="form-group">
+      <label for="name" th:text="#{register.name}">Name</label>
+      <input type="text" id="name" th:field="*{name}" th:errorclass="is-invalid" th:placeholder="#{register.name}" required>
+      <div th:if="${#fields.hasErrors('name')}" class="error" th:errors="*{name}"></div>
+    </div>
+    <div class="form-group">
+      <label for="surname" th:text="#{register.surname}">Surname</label>
+      <input type="text" id="surname" th:field="*{surname}" th:errorclass="is-invalid" th:placeholder="#{register.surname}" required>
+      <div th:if="${#fields.hasErrors('surname')}" class="error" th:errors="*{surname}"></div>
+    </div>
+    <div class="form-group">
+      <label for="email" th:text="#{register.email}">Email</label>
+      <input type="email" id="email" th:field="*{email}" th:errorclass="is-invalid" th:placeholder="#{register.email}" required>
+      <div th:if="${#fields.hasErrors('email')}" class="error" th:errors="*{email}"></div>
+    </div>
+    <div class="form-group">
+      <label for="password" th:text="#{register.password}">Password</label>
+      <input type="password" id="password" th:field="*{password}" th:errorclass="is-invalid" th:placeholder="#{register.password}" required>
+      <div th:if="${#fields.hasErrors('password')}" class="error" th:errors="*{password}"></div>
+    </div>
+    <div class="form-group">
+      <label for="phone" th:text="#{register.phone}">Phone Number</label>
+      <input type="tel" id="phone" th:field="*{phoneNumber}" th:errorclass="is-invalid" th:placeholder="#{register.phone}" required>
+      <div th:if="${#fields.hasErrors('phoneNumber')}" class="error" th:errors="*{phoneNumber}"></div>
+    </div>
+    <div class="form-group">
+      <label for="dob" th:text="#{register.dob}">Date of Birth</label>
+      <input type="date" id="dob" th:field="*{dateOfBirth}" th:errorclass="is-invalid" required>
+      <div th:if="${#fields.hasErrors('dateOfBirth')}" class="error" th:errors="*{dateOfBirth}"></div>
+    </div>
+    <div class="form-group">
+      <label for="gender" th:text="#{register.gender}">Gender</label>
+      <select id="gender" th:field="*{gender}" th:errorclass="is-invalid" required>
+        <option value="" disabled selected>Select your gender</option>
+        <option value="male" th:text="#{register.gender.male}">Male</option>
+        <option value="female" th:text="#{register.gender.female}">Female</option>
+      </select>
+      <div th:if="${#fields.hasErrors('gender')}" class="error" th:errors="*{gender}"></div>
+    </div>
+
+    <div class="text-center mt-50">
+      <button type="submit" class="button" th:text="#{register.button}">Sign Up</button>
+    </div>
+  </form>
+
+  <div class="text-center mt-20">
+    <p><span th:text="#{register.have_account}">Already have an account?</span> <a th:href="@{/login}" class="link" th:text="#{register.login_link}">Log in</a></p>
+  </div>
+</div>
+</body>
+</html>

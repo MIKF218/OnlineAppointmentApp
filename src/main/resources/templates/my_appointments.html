@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{appointment.my.title}">My Appointments</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Add styles for the confirmation dialog -->
+  <style>
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.4);
+    }
+    
+    .modal-content {
+      background-color: #fefefe;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      border-radius: 5px;
+    }
+    
+    .modal-buttons {
+      margin-top: 20px;
+      text-align: right;
+    }
+    
+    .modal-buttons button {
+      margin-left: 10px;
+    }
+    
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    
+    .close:hover,
+    .close:focus {
+      color: black;
+      text-decoration: none;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 5px;
+    }
+    
+    /* Added top-bar and language-switcher styles */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .language-switcher {
+      text-align: left;
+    }
+    .language-switcher a {
+      margin-left: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #3498db;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- Added language switcher top bar -->
+  <div class="top-bar">
+    <div class="language-switcher">
+      <span th:text="#{admin.dashboard.language}">language</span>
+      <a th:href="@{/appointments/my(language='en')}">EN</a> |
+      <a th:href="@{/appointments/my(language='tr')}">TR</a>
+    </div>
+  </div>
+
+  <h2 th:text="#{appointment.my.title}">My Appointments</h2>
+  
+  <!-- Display appointments directly -->
+  <div>
+    <div th:if="${appointments.empty}" class="message-box">
+      <p th:text="#{appointment.my.no_appointments}">You don't have any appointments scheduled.</p>
+    </div>
+    <table th:if="${!appointments.empty}" class="styled-table">
+      <thead>
+        <tr>
+          <th th:text="#{appointment.my.date}">Date</th>
+          <th th:text="#{appointment.my.time}">Time</th>
+          <th th:text="#{appointment.my.action}">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="appointment : ${appointments}">
+          <td th:text="${#temporals.format(appointment.date, 'dd.MM.yyyy')}">Date</td>
+          <td th:text="${appointment.time}">Time</td>
+          <td>
+            <div class="button-group">
+              <!-- Changed method from delete to post -->
+              <form th:action="@{/appointments/cancel/{id}(id=${appointment.id})}" method="post">
+                <button type="submit" th:text="#{appointment.my.cancel}" class="button">Cancel</button>
+              </form>
+              <button 
+                type="button" 
+                class="button" 
+                style="background: linear-gradient(to right, #2980b9, #3498db);" 
+                th:onclick="'openEditConfirmation(' + ${appointment.id} + ')'"
+                th:text="#{appointment.my.edit}">
+                Edit
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="text-center mt-40">
+    <a th:href="@{/home}" class="button" style="background: linear-gradient(to right, #7f8c8d, #95a5a6);" th:text="#{appointment.my.back}">Back to Home</a>
+  </div>
+  
+  <!-- Confirmation Modal -->
+  <div id="editConfirmationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3 th:text="#{appointment.my.edit_modal_title}">Edit Appointment</h3>
+      <p th:text="#{appointment.my.edit_modal_message}">Are you sure you want to edit this appointment? Your current appointment will be deleted.</p>
+      <div class="modal-buttons">
+        <button class="button" style="background: linear-gradient(to right, #7f8c8d, #95a5a6);" onclick="closeModal()" th:text="#{appointment.my.edit_modal_cancel}">Cancel</button>
+        <button class="button" style="background: linear-gradient(to right, #2980b9, #3498db);" id="confirmEditButton" th:text="#{appointment.my.edit_modal_confirm}">Yes, Edit Appointment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Get the modal
+  const modal = document.getElementById('editConfirmationModal');
+  const confirmBtn = document.getElementById('confirmEditButton');
+  
+  // Function to open the confirmation modal
+  function openEditConfirmation(appointmentId) {
+    modal.style.display = "block";
+    
+    // Update the confirmation button to handle this specific appointment
+    // Fixed the URL path to include leading slash
+    confirmBtn.onclick = function() {
+      window.location.href = "/appointments/edit/" + appointmentId;
+    }
+  }
+  
+  // Function to close the modal
+  function closeModal() {
+    modal.style.display = "none";
+  }
+  
+  // Close the modal if clicked outside of it
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      closeModal();
+    }
+  }
+</script>
+</body>
+</html>
